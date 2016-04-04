@@ -34,16 +34,19 @@ func (client *Client) Do(depType, tag string) error {
 	} else {
 		return nil
 	}
+
 	target := GetBinPath()
 	err := os.MkdirAll(target, 0755)
 	if err != nil {
 		return err
 	}
+
 	fmt.Println("downloading...", uri)
 	downloadFile, err := download(uri, target)
 	if err != nil {
 		return err
 	}
+
 	if isTarGZ(uri) {
 		fmt.Println("extracting...", downloadFile, target)
 		extractorClient := extractor.New()
@@ -53,11 +56,9 @@ func (client *Client) Do(depType, tag string) error {
 		}
 	}
 
-	if depType == "node" {
-		err = ExtractBin(target, tag)
-		if err != nil {
-			return err
-		}
+	err = ExtractBin(target, tag)
+	if err != nil {
+		return err
 	}
 
 	return nil
