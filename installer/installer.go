@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
 	"os"
 	"path"
-	"strings"
 
 	"github.com/octoblu/go-meshblu-connector-installer/extractor"
 )
@@ -28,11 +26,9 @@ func New() *Client {
 
 // Do download and install
 func (client *Client) Do(depType, tag string) error {
-	uri := ""
-	if depType == "node" {
-		uri = GetNodeURI(tag)
-	} else {
-		return nil
+	uri := GetResourceURI(depType, tag)
+	if uri == "" {
+		return fmt.Errorf("Unsupported platform")
 	}
 
 	target := GetBinPath()
@@ -47,38 +43,19 @@ func (client *Client) Do(depType, tag string) error {
 		return err
 	}
 
-	if isTarGZ(uri) {
-		fmt.Println("extracting...", downloadFile, target)
-		extractorClient := extractor.New()
-		err = extractorClient.Do(downloadFile, target)
-		if err != nil {
-			return err
-		}
+	fmt.Println("extracting...", downloadFile, target)
+	extractorClient := extractor.New()
+	err = extractorClient.Do(downloadFile, target)
+	if err != nil {
+		return err
 	}
 
-	err = ExtractBin(target, tag)
+	err = ExtractBin(depType, target, tag)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func getFileName(uriRaw string) (string, error) {
-	uri, err := url.Parse(uriRaw)
-	if err != nil {
-		return "", err
-	}
-	segments := strings.Split(uri.Path, "/")
-	return segments[len(segments)-1], nil
-}
-
-func isTarGZ(uriRaw string) bool {
-	fileName, err := getFileName(uriRaw)
-	if err != nil {
-		return false
-	}
-	return strings.Index(fileName, ".tar.gz") > -1
 }
 
 func download(uri, target string) (string, error) {

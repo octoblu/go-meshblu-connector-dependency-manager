@@ -1,13 +1,21 @@
 package installer
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
 )
 
-// GetNodeURI defines the uri to download to
-func GetNodeURI(tag string) string {
+// GetResourceURI defines the uri to download
+func GetResourceURI(depType, tag string) string {
+	if depType == NodeType {
+		return getNodeURI(tag)
+	}
+	return ""
+}
+
+func getNodeURI(tag string) string {
 	return strings.Replace("https://nodejs.org/dist/:tag:/node-:tag:-darwin-x64.tar.gz", ":tag:", tag, -1)
 }
 
@@ -17,22 +25,9 @@ func GetBinPath() string {
 }
 
 // ExtractBin allows you too extract the bin from the download
-func ExtractBin(target, tag string) error {
-	folderName := strings.Replace("node-:tag:-darwin-x64", ":tag:", tag, -1)
-	nodePath := path.Join(target, folderName, "bin", "node")
-	nodeSymPath := path.Join(target, "node")
-	os.Remove(nodeSymPath)
-	err := os.Symlink(nodePath, nodeSymPath)
-	if err != nil {
-		return err
+func ExtractBin(depType, target, tag string) error {
+	if depType == NodeType {
+		return ExtractNode(target, tag)
 	}
-
-	npmPath := path.Join(target, folderName, "bin", "npm")
-	npmSymPath := path.Join(target, "npm")
-	os.Remove(npmSymPath)
-	err = os.Symlink(npmPath, npmSymPath)
-	if err != nil {
-		return err
-	}
-	return nil
+	return fmt.Errorf("Unsupported platform")
 }
