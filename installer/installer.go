@@ -34,7 +34,7 @@ func (client *Client) Do(depType, tag string) error {
 	}
 
 	target := GetBinPath()
-	err := os.MkdirAll(target, 0755)
+	err := os.MkdirAll(target, 0777)
 	if err != nil {
 		return err
 	}
