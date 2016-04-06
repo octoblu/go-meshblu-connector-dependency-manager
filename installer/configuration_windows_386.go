@@ -37,7 +37,19 @@ func ExtractBin(depType, target, tag string) error {
 		return ExtractNode(target, tag)
 	}
 	if depType == NSSMType {
-		return nil
+		return ExtractNSSM(target, tag)
 	}
 	return fmt.Errorf("Unsupported platform")
+}
+
+// ExtractNSSM extracts the unzipped nssm directory
+func ExtractNSSM(target, tag string) error {
+	folderName := fmt.Sprintf("nssm-%s", tag)
+	nssmPath := path.Join(target, folderName, "win32", "nssm.exe")
+	nssmNewPath := path.Join(target, "nssm.exe")
+	err := CopyFile(nssmPath, nssmNewPath)
+	if err != nil {
+		return err
+	}
+	return nil
 }

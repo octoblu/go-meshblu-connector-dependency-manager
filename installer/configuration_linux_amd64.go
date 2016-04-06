@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
@@ -26,5 +27,29 @@ func GetBinPath() string {
 
 // ExtractBin allows you too extract the bin from the download
 func ExtractBin(depType, target, tag string) error {
+	if depType == NodeType {
+		return ExtractNode(target, tag)
+	}
+	return fmt.Errorf("Unsupported platform")
+}
+
+// ExtractNode extracts the node dependencies
+func ExtractNode(target, tag string) error {
+	folderName := strings.Replace("node-:tag:-linux-x64", ":tag:", tag, -1)
+	nodePath := path.Join(target, folderName, "bin", "node")
+	nodeSymPath := path.Join(target, "node")
+	os.Remove(nodeSymPath)
+	err := os.Symlink(nodePath, nodeSymPath)
+	if err != nil {
+		return err
+	}
+
+	npmPath := path.Join(target, folderName, "bin", "npm")
+	npmSymPath := path.Join(target, "npm")
+	os.Remove(npmSymPath)
+	err = os.Symlink(npmPath, npmSymPath)
+	if err != nil {
+		return err
+	}
 	return nil
 }

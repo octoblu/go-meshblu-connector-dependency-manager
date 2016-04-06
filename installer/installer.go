@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/octoblu/go-meshblu-connector-installer/extractor"
 )
@@ -56,6 +58,15 @@ func (client *Client) Do(depType, tag string) error {
 	}
 
 	return nil
+}
+
+func getFileName(source string) (string, error) {
+	uri, err := url.Parse(source)
+	if err != nil {
+		return "", err
+	}
+	segments := strings.Split(uri.Path, "/")
+	return segments[len(segments)-1], nil
 }
 
 func download(uri, target string) (string, error) {
