@@ -52,11 +52,13 @@ func (client *Client) Do(depType, tag string) error {
 		return err
 	}
 
+	fmt.Println("extracting bin...")
 	err = ExtractBin(depType, target, tag)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("done!")
 	return nil
 }
 
