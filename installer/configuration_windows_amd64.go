@@ -5,8 +5,6 @@ import (
 	"os"
 	"path"
 	"strings"
-
-	"github.com/jbenet/go-os-rename"
 )
 
 // GetResourceURI defines the uri to download
@@ -70,11 +68,28 @@ func ExtractNSSM(target, tag string) error {
 func ExtractNPM(target, tag string) error {
 	folderName := fmt.Sprintf("npm-%s", strings.Replace(tag, "v", "", -1))
 	npmPath := path.Join(target, folderName)
-	npmNewPath := path.Join(target, "node_modules", "npm")
-	os.RemoveAll(npmNewPath)
-	err = osrename.Rename(npmPath, npmNewPath)
+	nodeModulesPath := path.Join(target, "node_modules")
+	err := os.MkdirAll(nodeModulesPath, os.ModePerm)
 	if err != nil {
 		return err
+	}
+
+	err = os.Rename(path.Join(npmPath, "bin", "npm"), path.Join(target, "npm"))
+	if err != nil {
+		return fmt.Errorf("Error renaming npm %v", err.Error())
+	}
+
+	err = os.Rename(path.Join(npmPath, "bin", "npm.cmd"), path.Join(target, "npm.cmd"))
+	if err != nil {
+		return fmt.Errorf("Error renaming npm.cmd %v", err.Error())
+	}
+
+	npmNewPath := path.Join(nodeModulesPath, "npm")
+	os.RemoveAll(npmNewPath)
+
+	err = os.Rename(npmPath, npmNewPath)
+	if err != nil {
+		return fmt.Errorf("Error renaming npm node_modules %v", err.Error())
 	}
 	return nil
 }
