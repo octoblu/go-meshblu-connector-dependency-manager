@@ -39,7 +39,7 @@ func run(context *cli.Context) {
 
 	installerClient := installer.New()
 	err := installerClient.Do(depType, tag)
-	fatalIfError("Error installing dep:", err)
+	fatalIfError("error installing dep:", err)
 }
 
 func getOpts(context *cli.Context) (string, string) {

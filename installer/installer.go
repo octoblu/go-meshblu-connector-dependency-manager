@@ -28,9 +28,10 @@ func New() *Client {
 
 // Do download and install
 func (client *Client) Do(depType, tag string) error {
+	fmt.Println("installing dependency", depType, tag)
 	uri := GetResourceURI(depType, tag)
 	if uri == "" {
-		return fmt.Errorf("Unsupported platform")
+		return fmt.Errorf("unsupported platform")
 	}
 
 	target := GetBinPath()
