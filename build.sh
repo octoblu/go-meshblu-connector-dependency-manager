@@ -4,12 +4,33 @@ APP_NAME=meshblu-connector-dependency-manager
 TMP_DIR=$PWD/tmp
 IMAGE_NAME=local/$APP_NAME
 
+if [ -z "$TMP_DIR" ]; then
+  echo "no tmp dir"
+  exit 1
+fi
+
 build_on_docker() {
   docker build --tag $IMAGE_NAME:built .
 }
 
 build_on_local() {
-  env GOOS=linux go build -a -tags netgo -installsuffix cgo -ldflags '-w' -o "${TMP_DIR}/vulcand" .
+  local goos="$1"
+  local goarch="$2"
+  local filename="$(get_filename "$goos" "$goarch")"
+  env GOOS="$goos" GOARCH="$goarch" go build -a -tags netgo -installsuffix cgo -ldflags '-w' -o "${TMP_DIR}/${filename}" .
+}
+
+get_filename() {
+  local goos="$1"
+  local goarch="$2"
+  local filename="${APP_NAME}"
+  if [ ! -z "$goos" ]; then
+    filename="${filename}-${goos}"
+  fi
+  if [ ! -z "$goarch" ]; then
+    filename="${filename}-${goarch}"
+  fi
+  echo "$filename"
 }
 
 copy() {
@@ -19,6 +40,14 @@ copy() {
 
 init() {
   rm -rf $TMP_DIR/ \
+   && mkdir -p $TMP_DIR/
+}
+
+init_local() {
+  local goos="$1"
+  local goarch="$2"
+  local filename="$(get_filename "$goos" "$goarch")"
+  rm -rf $TMP_DIR/$filename \
    && mkdir -p $TMP_DIR/
 }
 
@@ -48,21 +77,33 @@ docker_build() {
 }
 
 local_build() {
-  init    || panic "init failed"
-  build_on_local || panic "build_on_local failed"
-  copy    || panic "copy failed"
-  package || panic "package failed"
+  local goos="$1"
+  local goarch="$2"
+
+  init_local "$goos" "$goarch" || panic "init failed"
+  build_on_local "$goos" "$goarch" || panic "build_on_local failed"
 }
 
 main() {
   local mode="$1"
+
+  local goos="${GOOS}"
+  local goarch="${GOARCH}"
+
   if [ "$mode" == "local" ]; then
     echo "Local Build"
-    local_build
-  else
+    local_build "$goos" "$goarch"
+    exit $?
+  fi
+
+  if [ "$mode" == "docker" ]; then
     echo "Docker Build"
     docker_build
+    exit $?
   fi
-  exit $?
+
+  echo "Usage: ./build.sh (local|docker)"
+  exit 1
 }
-main
+
+main $@

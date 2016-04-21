@@ -1,26 +1,28 @@
 language: go
 go:
 - '1.6'
+branches:
+  only:
+  - /^v[0-9]/
 before_install:
-- curl -o gpm https://raw.githubusercontent.com/pote/gpm/v1.3.2/bin/gpm
-- chmod +x "./gpm"
-- "./gpm"
+- echo "no before_install"
+install:
+- echo "no install"
+script:
+- echo "no tests"
 before_deploy:
 - "./cross-compile.sh"
-- mkdir -p deploy/go-meshblu-connector-dependency-manager/latest deploy/go-meshblu-connector-dependency-manager/$TRAVIS_TAG
-- cp tmp/cross/* deploy/go-meshblu-connector-dependency-manager/latest
-- cp tmp/cross/* deploy/go-meshblu-connector-dependency-manager/$TRAVIS_TAG
 deploy:
-  provider: s3
-  access_key_id: AKIAJH2D5IPIRHYJT5IA
-  secret_access_key:
-    secure: "i/CeKADZmW+zOJSz5YgoDpCN2KLdTlX69/jaRWdOO8fkkcUIc5b0HAOf+Nbu9hGfMqgVjies+wBn3S9AU1vjx/pdPC1yh1a2WYPR29HbnAjiTg3SfM04jaOp6Yua6akC5/8D34CqwLoT+7KkLroiIgPBTH8DJhD9hvGWRibAt7sKybI6B0Pr6QrmWpf2q8C1rUNYaM1wJUCRypNafKoxmt9qqkB2yanAVUGE751xpsHVpSMD2EjKUJ9yiu+TCP1u7tS3qlwNiOvsUxuJlJBSPvn+i1gw2N05gcmnfC9cXFMwayRvftiMCZjbH1znMbBYvb52bmzchwOzfZ/tq9QVYy2OE4oMLsYpqoYF/RON8cZv2sYAfT3+bNVojb4ykPzg6pIYSw/qtWITFaZnBqow9Erlb7c6M1mRmoz0tXZSbzITcHLpMN3sGvJTY3LuNiiRl+5jnVjg/bBZxM5iDhPOU+OfdHVyA8RY5X0jXe9z459OboP80VYxbE+sX3AVTeHFfnV9QmD4uTylr6+IGyHgWxAVWHaWzoikh0YoOrNDWlR4IMZDLJTr/MVbsXSCTkZg85FAknprqYpcEtj4tnU/Uy5h2zSK0LUFCyXU+KNHSetJ3VogfXIOmfst/LFjxZ4ryhlhJnqlys8fTZ+t24QXKomeldPcWNH4A5oZn2EEpjM="
-  bucket: meshblu-connector
-  region: us-west-2
+- provider: releases
+  api_key:
+    secure: "A+s2Funmvba/eDPbxAqI4cjDibZPo6cx6+mmizCgXtvOu8XzoUjTxjrJGfVASckeUC93OO9Z/wyvP6dakg5zPv0Cbof1VnXBC6r5FL+F4e2Af8Drn17qG8lysNQHpfvn1ef9ElXN+w6JZW3SEoaUskwfxUSf0eYAT8g3fUoiFVdI8f/PrmM8/zn/vhBEHOroyipSSFZ4TjbJ21TvOLrZyOAS03DwpHsJNJwb0UinoEqR3wE+UbcYfX4S/WkLGo2T1IH8FEYtOYla7UG2p4WZA0wyFjNBHBG4i6YSUIpmHw9CCsxXgZVGpei84oORiOWwV2uX9MMnNLj5Z0wnxua89i+rui8VEPxynvFWFhta+OR32H/QXPCscfWNLzK6JqYFIIwqVnooLeGC6hsFr+ghmapQ3V6EZmqbj4uqdRscNHHg6vIbqtX8xGpoHQZwBGA5EQ2RWxyk250hVLROjevkSV+NzrgOit567xAv8/Co3tbN4CzwIy9W5VAqoQrmDk/sGT6h+NjyzOkYO41G9HlYD7sb6e/50bBk+6uS5jTW4XB3efSFmm4h/IgFh9SoQ3dM6B5yK6MvGIuZ+sUeAnv0P0I2fj4W8vE05xiwoPPTCJtvVGbp7ndELHiFa9M6JJFD71ncKVDXFDXMxW+ylBxLeCZBNK+u72bD/DMpzWZGanM="
+  file:
+  - "tmp/meshblu-connector-dependency-manager-darwin-386"
+  - "tmp/meshblu-connector-dependency-manager-darwin-amd64"
+  - "tmp/meshblu-connector-dependency-manager-linux-386"
+  - "tmp/meshblu-connector-dependency-manager-linux-amd64"
+  - "tmp/meshblu-connector-dependency-manager-windows-386"
+  - "tmp/meshblu-connector-dependency-manager-windows-amd64"
   skip_cleanup: true
-  local-dir: deploy
-  detect_encoding: true
-  upload-dir: tools
   on:
     tags: true
-    repo: octoblu/go-meshblu-connector-dependency-manager
