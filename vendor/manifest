@@ -59,6 +59,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/octoblu/go-meshblu-connector-installer/extractor",
+			"repository": "https://github.com/octoblu/go-meshblu-connector-installer",
+			"vcs": "git",
+			"revision": "0f76f5cbc81e631165de42b05455fd53f81caf1d",
+			"branch": "master",
+			"path": "/extractor",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/onsi/ginkgo/ginkgo",
 			"repository": "https://github.com/onsi/ginkgo",
 			"vcs": "git",
