@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/octoblu/go-meshblu-connector-installer/extractor"
+	"github.com/octoblu/go-meshblu-connector-assembler/extractor"
 )
 
 // Installer interfaces with the a remote download server
