@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/octoblu/go-meshblu-connector-assembler/extractor"
@@ -35,7 +35,15 @@ func (client *Client) Do(depType, tag string) error {
 	}
 
 	target := GetBinPath()
-	err := os.MkdirAll(target, 0777)
+	exists, err := FilePathExists(filepath.Join(target, FinalDependencyFileName(depType, tag)))
+	if err != nil {
+		return err
+	}
+	if exists {
+		fmt.Println("dependency already exists")
+		return nil
+	}
+	err = os.MkdirAll(target, 0777)
 	if err != nil {
 		return err
 	}
@@ -77,7 +85,7 @@ func download(uri, target string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	downloadFile := path.Join(target, fileName)
+	downloadFile := filepath.Join(target, fileName)
 	outputStream, err := os.Create(downloadFile)
 
 	if err != nil {
@@ -106,4 +114,18 @@ func download(uri, target string) (string, error) {
 		return "", err
 	}
 	return downloadFile, nil
+}
+
+// FilePathExists check if a file exists
+func FilePathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
 }

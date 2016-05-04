@@ -3,9 +3,23 @@ package installer
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
+
+// FinalDependencyFileName gets the final dependency filename
+func FinalDependencyFileName(depType, tag string) string {
+	if depType == NodeType {
+		return "node.exe"
+	}
+	if depType == NSSMType {
+		return "nssm.exe"
+	}
+	if depType == NPMType {
+		return "npm"
+	}
+	return ""
+}
 
 // GetResourceURI defines the uri to download
 func GetResourceURI(depType, tag string) string {
@@ -35,7 +49,7 @@ func getNPMURI(tag string) string {
 
 // GetBinPath defines the target location
 func GetBinPath() string {
-	return path.Join(os.Getenv("LOCALAPPDATA"), "MeshbluConnectors", "bin")
+	return filepath.Join(os.Getenv("LOCALAPPDATA"), "MeshbluConnectors", "bin")
 }
 
 // ExtractBin allows you too extract the bin from the download
@@ -55,8 +69,8 @@ func ExtractBin(depType, target, tag string) error {
 // ExtractNSSM extracts the unzipped nssm directory
 func ExtractNSSM(target, tag string) error {
 	folderName := fmt.Sprintf("nssm-%s", tag)
-	nssmPath := path.Join(target, folderName, "win64", "nssm.exe")
-	nssmNewPath := path.Join(target, "nssm.exe")
+	nssmPath := filepath.Join(target, folderName, "win64", "nssm.exe")
+	nssmNewPath := filepath.Join(target, "nssm.exe")
 	err := CopyFile(nssmPath, nssmNewPath)
 	if err != nil {
 		return err
@@ -67,24 +81,24 @@ func ExtractNSSM(target, tag string) error {
 // ExtractNPM extracts the unzipped nssm directory
 func ExtractNPM(target, tag string) error {
 	folderName := fmt.Sprintf("npm-%s", strings.Replace(tag, "v", "", -1))
-	npmPath := path.Join(target, folderName)
-	nodeModulesPath := path.Join(target, "node_modules")
+	npmPath := filepath.Join(target, folderName)
+	nodeModulesPath := filepath.Join(target, "node_modules")
 	err := os.MkdirAll(nodeModulesPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	err = os.Rename(path.Join(npmPath, "bin", "npm"), path.Join(target, "npm"))
+	err = os.Rename(filepath.Join(npmPath, "bin", "npm"), filepath.Join(target, "npm"))
 	if err != nil {
 		return fmt.Errorf("Error renaming npm %v", err.Error())
 	}
 
-	err = os.Rename(path.Join(npmPath, "bin", "npm.cmd"), path.Join(target, "npm.cmd"))
+	err = os.Rename(filepath.Join(npmPath, "bin", "npm.cmd"), filepath.Join(target, "npm.cmd"))
 	if err != nil {
 		return fmt.Errorf("Error renaming npm.cmd %v", err.Error())
 	}
 
-	npmNewPath := path.Join(nodeModulesPath, "npm")
+	npmNewPath := filepath.Join(nodeModulesPath, "npm")
 	os.RemoveAll(npmNewPath)
 
 	err = os.Rename(npmPath, npmNewPath)

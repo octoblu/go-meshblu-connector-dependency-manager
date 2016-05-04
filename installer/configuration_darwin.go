@@ -3,9 +3,17 @@ package installer
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
+
+// FinalDependencyFileName gets the final dependency filename
+func FinalDependencyFileName(depType, tag string) string {
+	if depType == NodeType {
+		return NodeType
+	}
+	return ""
+}
 
 // GetResourceURI defines the uri to download
 func GetResourceURI(depType, tag string) string {
@@ -21,7 +29,7 @@ func getNodeURI(tag string) string {
 
 // GetBinPath defines the target location
 func GetBinPath() string {
-	return path.Join(os.Getenv("HOME"), "Library", "Application Support", "MeshbluConnectors", "bin")
+	return filepath.Join(os.Getenv("HOME"), "Library", "Application Support", "MeshbluConnectors", "bin")
 }
 
 // ExtractBin allows you too extract the bin from the download
@@ -35,16 +43,16 @@ func ExtractBin(depType, target, tag string) error {
 // ExtractNode extracts the node dependencies
 func ExtractNode(target, tag string) error {
 	folderName := strings.Replace("node-:tag:-darwin-x64", ":tag:", tag, -1)
-	nodePath := path.Join(target, folderName, "bin", "node")
-	nodeSymPath := path.Join(target, "node")
+	nodePath := filepath.Join(target, folderName, "bin", "node")
+	nodeSymPath := filepath.Join(target, "node")
 	os.Remove(nodeSymPath)
 	err := os.Symlink(nodePath, nodeSymPath)
 	if err != nil {
 		return err
 	}
 
-	npmPath := path.Join(target, folderName, "bin", "npm")
-	npmSymPath := path.Join(target, "npm")
+	npmPath := filepath.Join(target, folderName, "bin", "npm")
+	npmSymPath := filepath.Join(target, "npm")
 	os.Remove(npmSymPath)
 	err = os.Symlink(npmPath, npmSymPath)
 	if err != nil {

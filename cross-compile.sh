@@ -11,7 +11,7 @@ build() {
   for goos in darwin linux windows; do
     for goarch in 386 amd64; do
       echo "building: ${goos}-${goarch}"
-      env GOOS="$goos" GOARCH="$goarch" ./build.sh "local"
+      env GOOS="$goos" GOARCH="$goarch" ./build.sh "local" > /dev/null
     done
   done
 }
@@ -22,7 +22,7 @@ init() {
 }
 
 panic() {
-  local message=$1
+  local message="$1"
   echo $message
   exit 1
 }
@@ -31,4 +31,5 @@ main() {
   init    || panic "init failed"
   build   || panic "build failed"
 }
-main
+
+main "$@"
