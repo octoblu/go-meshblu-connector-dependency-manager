@@ -29,7 +29,7 @@ func getNodeURI(tag string) string {
 
 // GetBinPath defines the target location
 func GetBinPath() string {
-	return filepath.Join(os.Getenv("HOME"), "Library", "Application Support", "MeshbluConnectors", "bin")
+	return filepath.Join(os.Getenv("HOME"), ".octoblu", "MeshbluConnectors", "bin")
 }
 
 // ExtractBin allows you too extract the bin from the download
