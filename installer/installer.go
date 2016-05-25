@@ -2,15 +2,16 @@ package installer
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/octoblu/go-meshblu-connector-assembler/extractor"
+	De "github.com/tj/go-debug"
 )
+
+var debug = De.Debug("meshblu-connector-dependency-manager:installer")
 
 // Installer interfaces with the a remote download server
 type Installer interface {
@@ -28,7 +29,7 @@ func New() *Client {
 
 // Do download and install
 func (client *Client) Do(depType, tag string) error {
-	fmt.Println("installing dependency", depType, tag)
+	debug("installing dependency %v %v", depType, tag)
 	uri := GetResourceURI(depType, tag)
 	if uri == "" {
 		return fmt.Errorf("unsupported platform")
@@ -40,7 +41,7 @@ func (client *Client) Do(depType, tag string) error {
 		return err
 	}
 	if exists {
-		fmt.Println("dependency already exists")
+		debug("dependency already exists")
 		return nil
 	}
 	err = os.MkdirAll(target, 0777)
@@ -48,26 +49,18 @@ func (client *Client) Do(depType, tag string) error {
 		return err
 	}
 
-	fmt.Println("downloading...", uri)
-	downloadFile, err := download(uri, target)
+	err = extractor.New().DoWithURI(uri, target)
 	if err != nil {
-		return err
+		return fmt.Errorf("error downloading and unpacking %v", err.Error())
 	}
 
-	fmt.Println("extracting...", downloadFile, target)
-	extractorClient := extractor.New()
-	err = extractorClient.Do(downloadFile, target)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("extracting bin...")
+	debug("extracting bin...")
 	err = ExtractBin(depType, target, tag)
 	if err != nil {
-		return err
+		return fmt.Errorf("error extracting bin %v", err.Error())
 	}
 
-	fmt.Println("done!")
+	debug("done!")
 	return nil
 }
 
@@ -78,42 +71,6 @@ func getFileName(source string) (string, error) {
 	}
 	segments := strings.Split(uri.Path, "/")
 	return segments[len(segments)-1], nil
-}
-
-func download(uri, target string) (string, error) {
-	fileName, err := getFileName(uri)
-	if err != nil {
-		return "", err
-	}
-	downloadFile := filepath.Join(target, fileName)
-	outputStream, err := os.Create(downloadFile)
-
-	if err != nil {
-		fmt.Println("Error on os.Create", err.Error())
-		return "", err
-	}
-
-	defer outputStream.Close()
-
-	response, err := http.Get(uri)
-
-	if err != nil {
-		fmt.Println("Error on http.Get", err.Error())
-		return "", err
-	}
-	defer response.Body.Close()
-
-	if response.StatusCode != 200 {
-		return "", fmt.Errorf("Download invalid status code: %v", response.StatusCode)
-	}
-
-	_, err = io.Copy(outputStream, response.Body)
-
-	if err != nil {
-		fmt.Println("Error on io.Copy", err.Error())
-		return "", err
-	}
-	return downloadFile, nil
 }
 
 // FilePathExists check if a file exists
