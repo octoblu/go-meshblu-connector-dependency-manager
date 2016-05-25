@@ -34,12 +34,13 @@ func main() {
 	app.Run(os.Args)
 }
 
-func run(context *cli.Context) {
+func run(context *cli.Context) error {
 	tag, depType := getOpts(context)
 
 	installerClient := installer.New()
 	err := installerClient.Do(depType, tag)
 	fatalIfError("error installing dep:", err)
+	return nil
 }
 
 func getOpts(context *cli.Context) (string, string) {

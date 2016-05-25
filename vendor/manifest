@@ -67,6 +67,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/octoblu/go-meshblu-connector-assembler/downloader",
+			"repository": "https://github.com/octoblu/go-meshblu-connector-assembler",
+			"vcs": "git",
+			"revision": "f37eb2b3e011f859a89a6d609ea38c3b0ae9936c",
+			"branch": "master",
+			"path": "/downloader",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/octoblu/go-meshblu-connector-assembler/extractor",
 			"repository": "https://github.com/octoblu/go-meshblu-connector-assembler",
 			"vcs": "git",
