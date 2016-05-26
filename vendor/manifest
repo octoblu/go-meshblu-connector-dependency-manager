@@ -13,7 +13,7 @@
 			"importpath": "github.com/codegangsta/cli",
 			"repository": "https://github.com/codegangsta/cli",
 			"vcs": "git",
-			"revision": "595ba45e735c1e9c1f9ddc9e2ef21997fca893f2",
+			"revision": "71f57d300dd6a780ac1856c005c4b518cfd498ec",
 			"branch": "master",
 			"notests": true
 		},
@@ -21,7 +21,7 @@
 			"importpath": "github.com/coreos/go-semver",
 			"repository": "https://github.com/coreos/go-semver",
 			"vcs": "git",
-			"revision": "294930c1e79c64e7dbe360054274fdad492c8cf5",
+			"revision": "37bb68f88c4418889f0a9bfea4a5333d36bd15d5",
 			"branch": "master",
 			"notests": true
 		},
@@ -29,7 +29,7 @@
 			"importpath": "github.com/coreos/go-semver/semver",
 			"repository": "https://github.com/coreos/go-semver",
 			"vcs": "git",
-			"revision": "294930c1e79c64e7dbe360054274fdad492c8cf5",
+			"revision": "37bb68f88c4418889f0a9bfea4a5333d36bd15d5",
 			"branch": "master",
 			"path": "/semver",
 			"notests": true
@@ -46,7 +46,7 @@
 			"importpath": "github.com/mattn/go-colorable",
 			"repository": "https://github.com/mattn/go-colorable",
 			"vcs": "git",
-			"revision": "e8a10ddc7d2a7fe255f6fd7f501070a4cb62c183",
+			"revision": "bc69d6cebca8dd5675346a34a1c545b67dc74d5e",
 			"branch": "master",
 			"notests": true
 		},
@@ -59,36 +59,19 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/octoblu/go-meshblu-connector-assembler/downloader",
-			"repository": "https://github.com/octoblu/go-meshblu-connector-assembler",
-			"vcs": "git",
-			"revision": "f37eb2b3e011f859a89a6d609ea38c3b0ae9936c",
-			"branch": "master",
-			"path": "/downloader",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/octoblu/go-meshblu-connector-assembler/extractor",
 			"repository": "https://github.com/octoblu/go-meshblu-connector-assembler",
 			"vcs": "git",
-			"revision": "9b524f7d96c91183a942b9367e0fe023e83d3547",
+			"revision": "76cd595ec72ae8bce350cf9f8ead8ddd9fca0f2d",
 			"branch": "master",
 			"path": "/extractor",
-			"notests": true
-		},
-		{
-			"importpath": "github.com/octoblu/unzipit",
-			"repository": "https://github.com/octoblu/unzipit",
-			"vcs": "git",
-			"revision": "da0d7368be9ace550e15ad554aaf69fc468ca4cb",
-			"branch": "master",
 			"notests": true
 		},
 		{
 			"importpath": "github.com/onsi/ginkgo/ginkgo",
 			"repository": "https://github.com/onsi/ginkgo",
 			"vcs": "git",
-			"revision": "5437a97bf824dec14e58d68c56ee36e772670c2e",
+			"revision": "2c2e9bb47b4e44067024f29339588cac8b34dd12",
 			"branch": "master",
 			"path": "/ginkgo",
 			"notests": true
@@ -97,7 +80,7 @@
 			"importpath": "github.com/onsi/gomega",
 			"repository": "https://github.com/onsi/gomega",
 			"vcs": "git",
-			"revision": "c73e51675ad2455a4515b6213eb7145eaade4824",
+			"revision": "7ce781ea776b2fd506491011353bded2e40c8467",
 			"branch": "master",
 			"notests": true
 		},

@@ -62,7 +62,6 @@ gexec. In Ginkgo this is typically done in an AfterSuite callback.
 func CleanupBuildArtifacts() {
 	if tmpDir != "" {
 		os.RemoveAll(tmpDir)
-		tmpDir = ""
 	}
 }
 
