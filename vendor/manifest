@@ -10,14 +10,6 @@
 			"notests": true
 		},
 		{
-			"importpath": "github.com/c4milo/unzipit",
-			"repository": "https://github.com/c4milo/unzipit",
-			"vcs": "git",
-			"revision": "339618fad77ac6102721ba322bc1b1d678083520",
-			"branch": "master",
-			"notests": true
-		},
-		{
 			"importpath": "github.com/codegangsta/cli",
 			"repository": "https://github.com/codegangsta/cli",
 			"vcs": "git",
@@ -79,9 +71,17 @@
 			"importpath": "github.com/octoblu/go-meshblu-connector-assembler/extractor",
 			"repository": "https://github.com/octoblu/go-meshblu-connector-assembler",
 			"vcs": "git",
-			"revision": "f37eb2b3e011f859a89a6d609ea38c3b0ae9936c",
+			"revision": "9b524f7d96c91183a942b9367e0fe023e83d3547",
 			"branch": "master",
 			"path": "/extractor",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/unzipit",
+			"repository": "https://github.com/octoblu/unzipit",
+			"vcs": "git",
+			"revision": "da0d7368be9ace550e15ad554aaf69fc468ca4cb",
+			"branch": "master",
 			"notests": true
 		},
 		{
