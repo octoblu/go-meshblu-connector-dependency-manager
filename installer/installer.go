@@ -51,7 +51,7 @@ func (client *Client) Do(depType, tag string) error {
 		return err
 	}
 
-	debug("downloading...", uri)
+	debug("downloading %s", uri)
 	downloadFile, err := download(uri, target)
 	if err != nil {
 		return err
