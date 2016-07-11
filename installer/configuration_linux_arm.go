@@ -24,7 +24,7 @@ func GetResourceURI(depType, tag string) string {
 
 // getNodeURI defines the uri to download to
 func getNodeURI(tag string) string {
-	return strings.Replace("https://nodejs.org/dist/:tag:/node-:tag:-linux-x86.tar.gz", ":tag:", tag, -1)
+	return strings.Replace("https://nodejs.org/dist/:tag:/node-:tag:-linux-armv7l.tar.gz", ":tag:", tag, -1)
 }
 
 // GetBinPath defines the target location
@@ -39,7 +39,7 @@ func ExtractBin(depType, target, tag string) error {
 
 // ExtractNode extracts the node dependencies
 func ExtractNode(target, tag string) error {
-	folderName := strings.Replace("node-:tag:-linux-x86", ":tag:", tag, -1)
+	folderName := strings.Replace("node-:tag:-linux-armv7l", ":tag:", tag, -1)
 	nodePath := filepath.Join(target, folderName, "bin", "node")
 	nodeSymPath := filepath.Join(target, "node")
 	os.Remove(nodeSymPath)

@@ -9,7 +9,11 @@ fi
 
 build() {
   for goos in darwin linux windows; do
-    for goarch in 386 amd64; do
+    for goarch in 386 amd64 arm; do
+      if [ "$goos" == "windows" -a "$goarch" == "arm" ]; then
+        continue # Cannot cross compile to windows-arm
+      fi
+
       echo "building: ${goos}-${goarch}"
       env GOOS="$goos" GOARCH="$goarch" ./build.sh "local" > /dev/null
     done
