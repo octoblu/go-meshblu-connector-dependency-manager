@@ -68,7 +68,7 @@
 		{
 			"importpath": "github.com/octoblu/unzipit",
 			"repository": "https://github.com/octoblu/unzipit",
-			"revision": "da0d7368be9ace550e15ad554aaf69fc468ca4cb",
+			"revision": "04173d2395b9a55dde7293fcd1b9fdb20c5c1995",
 			"branch": "master",
 			"notests": true
 		},

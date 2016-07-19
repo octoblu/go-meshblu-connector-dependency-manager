@@ -72,17 +72,32 @@ var _ = Describe("InstallNode", func() {
 						Expect(transaction.Request).NotTo(BeNil())
 					})
 
-					It("should save the package on the filesystem", func() {
+					It("should save node on the filesystem", func() {
 						exists, err := afero.Exists(afero.NewOsFs(), filepath.Join(binPath, "node"))
 						Expect(err).To(BeNil())
 						Expect(exists).To(BeTrue())
 					})
 
-					It("should save the response body on the filesystem", func() {
+					It("should save the node response body on the filesystem", func() {
 						expectedData, err := afero.ReadFile(afero.NewOsFs(), "fixtures/node-v5.0.0-darwin-x64/bin/node")
 						Expect(err).To(BeNil())
 
 						actualData, err := afero.ReadFile(afero.NewOsFs(), filepath.Join(binPath, "node"))
+						Expect(err).To(BeNil())
+						Expect(actualData).To(Equal(expectedData))
+					})
+
+					It("should save npm on the filesystem", func() {
+						exists, err := afero.Exists(afero.NewOsFs(), filepath.Join(binPath, "npm"))
+						Expect(err).To(BeNil())
+						Expect(exists).To(BeTrue())
+					})
+
+					It("should save the npm response body on the filesystem", func() {
+						expectedData, err := afero.ReadFile(afero.NewOsFs(), "fixtures/node-v5.0.0-darwin-x64/bin/npm")
+						Expect(err).To(BeNil())
+
+						actualData, err := afero.ReadFile(afero.NewOsFs(), filepath.Join(binPath, "npm"))
 						Expect(err).To(BeNil())
 						Expect(actualData).To(Equal(expectedData))
 					})

@@ -343,6 +343,11 @@ func untarFile(hdr *tar.Header, tr *tar.Reader, fp, rootdir string) (string, err
 		return rootdir, err
 	}
 
+	if hdr.Typeflag == tar.TypeSymlink {
+		err := os.Symlink(hdr.Linkname, fp)
+		return rootdir, err
+	}
+
 	file, err := os.Create(fp)
 	if err != nil {
 		return rootdir, err

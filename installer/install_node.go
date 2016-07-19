@@ -34,10 +34,22 @@ func installNodeOnFS(binPath string, compressedReader io.Reader) error {
 		return err
 	}
 
+	actualNPMPath := filepath.Join(archivePath, "bin/npm")
 	actualNodePath := filepath.Join(archivePath, "bin/node")
-	pathToSymlink := filepath.Join(binPath, "node")
-	// npmPath := filepath.Join(binPath, "node")
-	return os.Symlink(actualNodePath, pathToSymlink)
+	pathToNodeSymlink := filepath.Join(binPath, "node")
+	pathToNPMSymlink := filepath.Join(binPath, "npm")
+
+	err = os.Symlink(actualNodePath, pathToNodeSymlink)
+	if err != nil {
+		return err
+	}
+
+	err = os.Symlink(actualNPMPath, pathToNPMSymlink)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func nodeURL(baseURLStr, tag string, osRuntime osruntime.OSRuntime) (*url.URL, error) {
