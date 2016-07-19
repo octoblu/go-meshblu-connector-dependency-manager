@@ -59,6 +59,13 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/octoblu/go-test-server",
+			"repository": "https://github.com/octoblu/go-test-server",
+			"revision": "2f423092efa791c60d3ba6b8accbdd3c274c2f0b",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/onsi/ginkgo",
 			"repository": "https://github.com/onsi/ginkgo",
 			"revision": "7d3240191d7b2311b60090fcbc96e56bffc45ec0",

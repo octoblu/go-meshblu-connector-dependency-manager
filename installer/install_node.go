@@ -26,7 +26,7 @@ func InstallNodeWithoutDefaults(tag, baseURLStr string, Fs afero.Fs, osRuntime o
 }
 
 func nodeURL(baseURLStr, tag string, osRuntime osruntime.OSRuntime) (*url.URL, error) {
-	baseURL, err := url.Parse(baseURLStr)
+	nodeURL, err := url.Parse(baseURLStr)
 	if err != nil {
 		return nil, err
 	}
@@ -41,9 +41,8 @@ func nodeURL(baseURLStr, tag string, osRuntime osruntime.OSRuntime) (*url.URL, e
 		return nil, err
 	}
 
-	nodeURL := *baseURL
 	nodeURL.Path = fmt.Sprintf("%v/%v", filePath, fileName)
-	return &nodeURL, nil
+	return nodeURL, nil
 }
 
 func nodeFileName(tag string, osRuntime osruntime.OSRuntime) (string, error) {
