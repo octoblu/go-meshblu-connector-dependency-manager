@@ -10,6 +10,7 @@ import (
 
 	"github.com/octoblu/go-meshblu-connector-installer/osruntime"
 	"github.com/octoblu/unzipit"
+	"github.com/spf13/afero"
 )
 
 // InstallNode installs the specified version of Node.JS
@@ -25,10 +26,18 @@ func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, osRuntime osrun
 	}
 
 	response, _ := http.Get(packageURL.String())
-	return installNodeOnFS(binPath, response.Body)
+	if osRuntime.GOOS == Windows {
+		return installNodeOnWindowsFS(binPath, response.Body)
+	}
+	return installNodeAndNPMOnFS(binPath, response.Body)
 }
 
-func installNodeOnFS(binPath string, compressedReader io.Reader) error {
+func installNodeOnWindowsFS(binPath string, reader io.Reader) error {
+	filePath := filepath.Join(binPath, "node.exe")
+	return afero.WriteReader(afero.NewOsFs(), filePath, reader)
+}
+
+func installNodeAndNPMOnFS(binPath string, compressedReader io.Reader) error {
 	archivePath, err := unzipit.UnpackStream(compressedReader, binPath)
 	if err != nil {
 		return err
