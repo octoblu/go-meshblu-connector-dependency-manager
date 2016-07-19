@@ -48,7 +48,11 @@ func New(onFail FailHandler) Server {
 		transaction.Request = request
 		response.Header().Add("Content-Type", "application/octet-stream")
 		response.WriteHeader(transaction.ResponseStatus)
-		response.Write([]byte(transaction.ResponseBody))
+
+		if len(transaction.ResponseBody) > 0 {
+			response.Write(transaction.ResponseBody)
+		}
+		response.Write([]byte(transaction.ResponseBodyStr))
 	}))
 
 	return &transactionServer{transactions: transactions, server: server}

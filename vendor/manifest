@@ -61,7 +61,14 @@
 		{
 			"importpath": "github.com/octoblu/go-test-server",
 			"repository": "https://github.com/octoblu/go-test-server",
-			"revision": "2f423092efa791c60d3ba6b8accbdd3c274c2f0b",
+			"revision": "b82f16e63dba6a4643f7770a7870e31ae84b2df6",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/octoblu/unzipit",
+			"repository": "https://github.com/octoblu/unzipit",
+			"revision": "da0d7368be9ace550e15ad554aaf69fc468ca4cb",
 			"branch": "master",
 			"notests": true
 		},

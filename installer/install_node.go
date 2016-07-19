@@ -2,30 +2,42 @@ package installer
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 
 	"github.com/octoblu/go-meshblu-connector-installer/osruntime"
-	"github.com/spf13/afero"
+	"github.com/octoblu/unzipit"
 )
 
 // InstallNode installs the specified version of Node.JS
 func InstallNode(tag, binPath string) error {
-	return InstallNodeWithoutDefaults(tag, binPath, "https://nodejs.org", afero.NewOsFs(), osruntime.New())
+	return InstallNodeWithoutDefaults(tag, binPath, "https://nodejs.org", osruntime.New())
 }
 
 // InstallNodeWithoutDefaults installs the specified version of Node.JS
-func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, Fs afero.Fs, osRuntime osruntime.OSRuntime) error {
+func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, osRuntime osruntime.OSRuntime) error {
 	packageURL, err := nodeURL(baseURLStr, tag, osRuntime)
 	if err != nil {
 		return err
 	}
 
-	http.Get(packageURL.String())
-	filePath := filepath.Join(binPath, "node")
-	afero.WriteFile(Fs, filePath, []byte(""), 0755)
-	return nil
+	response, _ := http.Get(packageURL.String())
+	return installNodeOnFS(binPath, response.Body)
+}
+
+func installNodeOnFS(binPath string, compressedReader io.Reader) error {
+	archivePath, err := unzipit.UnpackStream(compressedReader, binPath)
+	if err != nil {
+		return err
+	}
+
+	actualNodePath := filepath.Join(archivePath, "bin/node")
+	pathToSymlink := filepath.Join(binPath, "node")
+	// npmPath := filepath.Join(binPath, "node")
+	return os.Symlink(actualNodePath, pathToSymlink)
 }
 
 func nodeURL(baseURLStr, tag string, osRuntime osruntime.OSRuntime) (*url.URL, error) {
