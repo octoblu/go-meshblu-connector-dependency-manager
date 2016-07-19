@@ -45,7 +45,7 @@ var _ = Describe("InstallNode", func() {
 					BeforeEach(func() {
 						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-darwin-x64.tar.gz", &testserver.Transaction{ResponseStatus: 204})
 						darwinX64 := osruntime.OSRuntime{GOOS: "darwin", GOARCH: "amd64"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", server.URL(), Fs, darwinX64)
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", "/path/to/bin", server.URL(), Fs, darwinX64)
 					})
 
 					It("should return no error", func() {
@@ -56,6 +56,12 @@ var _ = Describe("InstallNode", func() {
 						transaction := server.Get("GET", "/dist/v5.0.0/node-v5.0.0-darwin-x64.tar.gz")
 						Expect(transaction.Request).NotTo(BeNil())
 					})
+
+					It("should save the package on the filesystem", func() {
+						exists, err := afero.Exists(Fs, "/path/to/bin/node")
+						Expect(err).To(BeNil())
+						Expect(exists).To(BeTrue())
+					})
 				})
 			})
 
@@ -65,7 +71,7 @@ var _ = Describe("InstallNode", func() {
 						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-linux-x86.tar.gz", &testserver.Transaction{ResponseStatus: 204})
 
 						linux386 := osruntime.OSRuntime{GOOS: "linux", GOARCH: "386"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", server.URL(), Fs, linux386)
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", "/path/to/bin", server.URL(), Fs, linux386)
 					})
 
 					It("should return no error", func() {
@@ -85,7 +91,7 @@ var _ = Describe("InstallNode", func() {
 						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-linux-armv71.tar.gz", &testserver.Transaction{ResponseStatus: 204})
 
 						linuxArm := osruntime.OSRuntime{GOOS: "linux", GOARCH: "arm"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", server.URL(), Fs, linuxArm)
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", "/path/to/bin", server.URL(), Fs, linuxArm)
 					})
 
 					It("should return no error", func() {
@@ -103,7 +109,7 @@ var _ = Describe("InstallNode", func() {
 				Describe("When called", func() {
 					BeforeEach(func() {
 						linuxSparc := osruntime.OSRuntime{GOOS: "linux", GOARCH: "sparc"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", server.URL(), Fs, linuxSparc)
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", "/path/to/bin", server.URL(), Fs, linuxSparc)
 					})
 
 					It("should return an error", func() {
@@ -118,7 +124,7 @@ var _ = Describe("InstallNode", func() {
 						server.Set("GET", "/dist/v5.0.0/win-x64/node.exe", &testserver.Transaction{ResponseStatus: 204})
 
 						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", server.URL(), Fs, windowsX64)
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", "/path/to/bin", server.URL(), Fs, windowsX64)
 					})
 
 					It("should return no error", func() {

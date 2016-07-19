@@ -11,7 +11,7 @@ import (
 
 // InstallNPM installs the specified version of Node.JS
 func InstallNPM(tag string) error {
-	return InstallNodeWithoutDefaults(tag, "https://github.com", afero.NewOsFs(), osruntime.New())
+	return InstallNPMWithoutDefaults(tag, "https://github.com", afero.NewOsFs(), osruntime.New())
 }
 
 // InstallNPMWithoutDefaults installs the specified version of NPM

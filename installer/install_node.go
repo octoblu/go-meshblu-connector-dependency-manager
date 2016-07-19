@@ -4,24 +4,27 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"path/filepath"
 
 	"github.com/octoblu/go-meshblu-connector-installer/osruntime"
 	"github.com/spf13/afero"
 )
 
 // InstallNode installs the specified version of Node.JS
-func InstallNode(tag string) error {
-	return InstallNodeWithoutDefaults(tag, "https://nodejs.org", afero.NewOsFs(), osruntime.New())
+func InstallNode(tag, binPath string) error {
+	return InstallNodeWithoutDefaults(tag, binPath, "https://nodejs.org", afero.NewOsFs(), osruntime.New())
 }
 
 // InstallNodeWithoutDefaults installs the specified version of Node.JS
-func InstallNodeWithoutDefaults(tag, baseURLStr string, Fs afero.Fs, osRuntime osruntime.OSRuntime) error {
+func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, Fs afero.Fs, osRuntime osruntime.OSRuntime) error {
 	packageURL, err := nodeURL(baseURLStr, tag, osRuntime)
 	if err != nil {
 		return err
 	}
 
 	http.Get(packageURL.String())
+	filePath := filepath.Join(binPath, "node")
+	afero.WriteFile(Fs, filePath, []byte(""), 0755)
 	return nil
 }
 
