@@ -1,6 +1,10 @@
 package installer_test
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
+
 	"github.com/octoblu/go-meshblu-connector-dependency-manager/installer"
 	"github.com/octoblu/go-meshblu-connector-installer/osruntime"
 	"github.com/octoblu/go-test-server/testserver"
@@ -31,12 +35,17 @@ var _ = Describe("InstallNPM", func() {
 
 	Describe("InstallNPMWithoutDefaults", func() {
 		var (
-			err error
-			Fs  afero.Fs
+			binPath string
+			err     error
 		)
 
 		BeforeEach(func() {
-			Fs = afero.NewMemMapFs()
+			binPath, err = ioutil.TempDir(os.TempDir(), "installer-tests")
+			Expect(err).To(BeNil())
+		})
+
+		AfterEach(func() {
+			// os.RemoveAll(binPath)
 		})
 
 		Describe("InstallNPMWithoutDefaults", func() {
@@ -44,7 +53,7 @@ var _ = Describe("InstallNPM", func() {
 				Describe("When installing node", func() {
 					BeforeEach(func() {
 						darwinX64 := osruntime.OSRuntime{GOOS: "darwin", GOARCH: "amd64"}
-						err = installer.InstallNPMWithoutDefaults("v5.0.0", server.URL(), Fs, darwinX64)
+						err = installer.InstallNPMWithoutDefaults("v5.0.0", binPath, server.URL(), darwinX64)
 					})
 
 					It("should return no error (and make no http requests)", func() {
@@ -57,7 +66,7 @@ var _ = Describe("InstallNPM", func() {
 				Describe("When everything goes well", func() {
 					BeforeEach(func() {
 						linux386 := osruntime.OSRuntime{GOOS: "linux", GOARCH: "386"}
-						err = installer.InstallNPMWithoutDefaults("v5.0.0", server.URL(), Fs, linux386)
+						err = installer.InstallNPMWithoutDefaults("v5.0.0", binPath, server.URL(), linux386)
 					})
 
 					It("should return no error (and make no http requests)", func() {
@@ -70,7 +79,7 @@ var _ = Describe("InstallNPM", func() {
 				Describe("When everything goes well", func() {
 					BeforeEach(func() {
 						linuxArm := osruntime.OSRuntime{GOOS: "linux", GOARCH: "arm"}
-						err = installer.InstallNPMWithoutDefaults("v5.0.0", server.URL(), Fs, linuxArm)
+						err = installer.InstallNPMWithoutDefaults("v5.0.0", binPath, server.URL(), linuxArm)
 					})
 
 					It("should return no error (and make no http requests)", func() {
@@ -82,10 +91,14 @@ var _ = Describe("InstallNPM", func() {
 			Describe("In windows amd64", func() {
 				Describe("When installing NPM", func() {
 					BeforeEach(func() {
-						server.Set("GET", "/npm/npm/archive/v3.10.0.zip", &testserver.Transaction{ResponseStatus: 204})
+						var data []byte
+						data, err = afero.ReadFile(afero.NewOsFs(), "fixtures/npm-3.10.0.zip")
+						Expect(err).To(BeNil())
+
+						server.Set("GET", "/npm/npm/archive/v3.10.0.zip", &testserver.Transaction{ResponseStatus: 200, ResponseBody: data})
 
 						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
-						err = installer.InstallNPMWithoutDefaults("v3.10.0", server.URL(), Fs, windowsX64)
+						err = installer.InstallNPMWithoutDefaults("v3.10.0", binPath, server.URL(), windowsX64)
 					})
 
 					It("should return no error", func() {
@@ -95,6 +108,24 @@ var _ = Describe("InstallNPM", func() {
 					It("should GET /npm/npm/archive/v3.10.0.zip", func() {
 						transaction := server.Get("GET", "/npm/npm/archive/v3.10.0.zip")
 						Expect(transaction.Request).NotTo(BeNil())
+					})
+
+					It("should save the NPM response body on the filesystem", func() {
+						expectedData, err := afero.ReadFile(afero.NewOsFs(), "fixtures/npm-3.10.0/bin/npm")
+						Expect(err).To(BeNil())
+
+						actualData, err := afero.ReadFile(afero.NewOsFs(), filepath.Join(binPath, "npm"))
+						Expect(err).To(BeNil())
+						Expect(actualData).To(Equal(expectedData))
+					})
+
+					It("should save the NPM.cmd response body on the filesystem", func() {
+						expectedData, err := afero.ReadFile(afero.NewOsFs(), "fixtures/npm-3.10.0/bin/npm.cmd")
+						Expect(err).To(BeNil())
+
+						actualData, err := afero.ReadFile(afero.NewOsFs(), filepath.Join(binPath, "npm.cmd"))
+						Expect(err).To(BeNil())
+						Expect(actualData).To(Equal(expectedData))
 					})
 				})
 			})
