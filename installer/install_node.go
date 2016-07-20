@@ -25,6 +25,12 @@ func InstallNode(tag, binPath string) error {
 // InstallNodeWithoutDefaults installs the specified version of Node.JS
 func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, osRuntime osruntime.OSRuntime) error {
 	de("InstallNodeWithoutDefaults: %v | %v | %v | %v | %v", tag, binPath, baseURLStr, osRuntime.GOOS, osRuntime.GOARCH)
+	if exists, err := nodeIsAlreadyInstalled(binPath, osRuntime); err != nil {
+		return err
+	} else if exists {
+		de("node was already installed, skipping")
+		return nil
+	}
 
 	packageURL, err := nodeURL(baseURLStr, tag, osRuntime)
 	if err != nil {
@@ -73,6 +79,14 @@ func installNodeAndNPMOnFS(binPath string, compressedReader io.Reader) error {
 	}
 
 	return nil
+}
+
+func nodeIsAlreadyInstalled(binDir string, osRuntime osruntime.OSRuntime) (bool, error) {
+	if osRuntime.GOOS == Windows {
+		return afero.Exists(afero.NewOsFs(), filepath.Join(binDir, "node.exe"))
+	}
+
+	return afero.Exists(afero.NewOsFs(), filepath.Join(binDir, "node"))
 }
 
 func nodeURL(baseURLStr, tag string, osRuntime osruntime.OSRuntime) (*url.URL, error) {

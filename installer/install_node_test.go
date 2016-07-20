@@ -128,6 +128,24 @@ var _ = Describe("InstallNode", func() {
 						Expect(err).NotTo(BeNil())
 					})
 				})
+
+				Describe("When node is already installed", func() {
+					BeforeEach(func() {
+						err = afero.WriteFile(afero.NewOsFs(), filepath.Join(binPath, "node"), []byte(""), 0755)
+						Expect(err).To(BeNil())
+						err = afero.WriteFile(afero.NewOsFs(), filepath.Join(binPath, "npm"), []byte(""), 0755)
+						Expect(err).To(BeNil())
+					})
+
+					BeforeEach(func() {
+						darwinX64 := osruntime.OSRuntime{GOOS: "darwin", GOARCH: "amd64"}
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", binPath, server.URL(), darwinX64)
+					})
+
+					It("should return no error (and not make the HTTP request)", func() {
+						Expect(err).To(BeNil())
+					})
+				})
 			})
 
 			Describe("In linux 386", func() {

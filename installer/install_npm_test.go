@@ -153,6 +153,22 @@ var _ = Describe("InstallNPM", func() {
 						Expect(err).NotTo(BeNil())
 					})
 				})
+
+				Describe("When NPM is already installed", func() {
+					BeforeEach(func() {
+						err = afero.WriteFile(afero.NewOsFs(), filepath.Join(binPath, "npm"), []byte(""), 0755)
+						Expect(err).To(BeNil())
+					})
+
+					BeforeEach(func() {
+						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
+						err = installer.InstallNPMWithoutDefaults("v3.10.0", binPath, server.URL(), windowsX64)
+					})
+
+					It("should return no error (and not make the HTTP request)", func() {
+						Expect(err).To(BeNil())
+					})
+				})
 			})
 		})
 	})
