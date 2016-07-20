@@ -34,6 +34,9 @@ func InstallNPMWithoutDefaults(tag, binPath, baseURLStr string, osRuntime osrunt
 	if err != nil {
 		return err
 	}
+	if response.StatusCode != 200 {
+		return fmt.Errorf("Expected HTTP status code 200, received: %v", response.StatusCode)
+	}
 
 	return installNPMOnTheFS(tag, binPath, response.Body)
 }

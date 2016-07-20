@@ -102,6 +102,32 @@ var _ = Describe("InstallNode", func() {
 						Expect(actualData).To(Equal(expectedData))
 					})
 				})
+
+				Describe("When downloading returns a 404", func() {
+					BeforeEach(func() {
+						transaction := &testserver.Transaction{ResponseStatus: 404}
+						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-darwin-x64.tar.gz", transaction)
+
+						darwinX64 := osruntime.OSRuntime{GOOS: "darwin", GOARCH: "amd64"}
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", binPath, server.URL(), darwinX64)
+					})
+
+					It("should return an error", func() {
+						Expect(err).NotTo(BeNil())
+						Expect(err.Error()).To(ContainSubstring("Expected HTTP status code 200, received: 404"))
+					})
+				})
+
+				Describe("When the server refuses the connection", func() {
+					BeforeEach(func() {
+						darwinX64 := osruntime.OSRuntime{GOOS: "darwin", GOARCH: "amd64"}
+						err = installer.InstallNodeWithoutDefaults("v5.0.0", binPath, "http://0.0.0.0:0", darwinX64)
+					})
+
+					It("should return an error", func() {
+						Expect(err).NotTo(BeNil())
+					})
+				})
 			})
 
 			Describe("In linux 386", func() {

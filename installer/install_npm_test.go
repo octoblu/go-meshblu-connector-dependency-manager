@@ -128,6 +128,31 @@ var _ = Describe("InstallNPM", func() {
 						Expect(actualData).To(Equal(expectedData))
 					})
 				})
+
+				Describe("When the server responds with a non 200", func() {
+					BeforeEach(func() {
+						server.Set("GET", "/npm/npm/archive/v3.10.0.zip", &testserver.Transaction{ResponseStatus: 404})
+
+						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
+						err = installer.InstallNPMWithoutDefaults("v3.10.0", binPath, server.URL(), windowsX64)
+					})
+
+					It("should return an error", func() {
+						Expect(err).NotTo(BeNil())
+						Expect(err.Error()).To(ContainSubstring("Expected HTTP status code 200, received: 404"))
+					})
+				})
+
+				Describe("When the server refuses the connection", func() {
+					BeforeEach(func() {
+						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
+						err = installer.InstallNPMWithoutDefaults("v3.10.0", binPath, "http://0.0.0.0:0", windowsX64)
+					})
+
+					It("should return an error", func() {
+						Expect(err).NotTo(BeNil())
+					})
+				})
 			})
 		})
 	})

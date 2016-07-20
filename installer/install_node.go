@@ -11,7 +11,11 @@ import (
 	"github.com/octoblu/go-meshblu-connector-installer/osruntime"
 	"github.com/octoblu/unzipit"
 	"github.com/spf13/afero"
+
+	De "github.com/visionmedia/go-debug"
 )
+
+var de = De.Debug("meshblu-connector-installer:install_node")
 
 // InstallNode installs the specified version of Node.JS
 func InstallNode(tag, binPath string) error {
@@ -20,12 +24,22 @@ func InstallNode(tag, binPath string) error {
 
 // InstallNodeWithoutDefaults installs the specified version of Node.JS
 func InstallNodeWithoutDefaults(tag, binPath, baseURLStr string, osRuntime osruntime.OSRuntime) error {
+	de("InstallNodeWithoutDefaults: %v | %v | %v | %v | %v", tag, binPath, baseURLStr, osRuntime.GOOS, osRuntime.GOARCH)
+
 	packageURL, err := nodeURL(baseURLStr, tag, osRuntime)
 	if err != nil {
 		return err
 	}
+	de("resolved packageURL: %v", packageURL)
 
-	response, _ := http.Get(packageURL.String())
+	response, err := http.Get(packageURL.String())
+	if err != nil {
+		return err
+	}
+	if response.StatusCode != 200 {
+		return fmt.Errorf("Expected HTTP status code 200, received: %v", response.StatusCode)
+	}
+
 	if osRuntime.GOOS == Windows {
 		return installNodeOnWindowsFS(binPath, response.Body)
 	}
