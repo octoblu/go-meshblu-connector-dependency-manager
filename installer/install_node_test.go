@@ -176,10 +176,10 @@ var _ = Describe("InstallNode", func() {
 				Describe("When everything goes well", func() {
 					BeforeEach(func() {
 						var data []byte
-						data, err = afero.ReadFile(afero.NewOsFs(), "fixtures/node-v5.0.0-linux-armv71.tar.gz")
+						data, err = afero.ReadFile(afero.NewOsFs(), "fixtures/node-v5.0.0-linux-armv7l.tar.gz")
 						Expect(err).To(BeNil())
 
-						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-linux-armv71.tar.gz", &testserver.Transaction{ResponseStatus: 200, ResponseBody: data})
+						server.Set("GET", "/dist/v5.0.0/node-v5.0.0-linux-armv7l.tar.gz", &testserver.Transaction{ResponseStatus: 200, ResponseBody: data})
 
 						linuxArm := osruntime.OSRuntime{GOOS: "linux", GOARCH: "arm"}
 						err = installer.InstallNodeWithoutDefaults("v5.0.0", binPath, server.URL(), linuxArm)
@@ -189,8 +189,8 @@ var _ = Describe("InstallNode", func() {
 						Expect(err).To(BeNil())
 					})
 
-					It("should GET /dist/v5.0.0/node-v5.0.0-linux-armv71.tar.gz", func() {
-						transaction := server.Get("GET", "/dist/v5.0.0/node-v5.0.0-linux-armv71.tar.gz")
+					It("should GET /dist/v5.0.0/node-v5.0.0-linux-armv7l.tar.gz", func() {
+						transaction := server.Get("GET", "/dist/v5.0.0/node-v5.0.0-linux-armv7l.tar.gz")
 						Expect(transaction.Request).NotTo(BeNil())
 					})
 				})
