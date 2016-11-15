@@ -208,39 +208,6 @@ var _ = Describe("InstallNode", func() {
 					})
 				})
 			})
-
-			Describe("In windows amd64", func() {
-				Describe("When installing node", func() {
-					BeforeEach(func() {
-						var data []byte
-						data, err = afero.ReadFile(afero.NewOsFs(), "fixtures/node.exe")
-						Expect(err).To(BeNil())
-
-						server.Set("GET", "/dist/v5.0.0/win-x64/node.exe", &testserver.Transaction{ResponseStatus: 200, ResponseBody: data})
-
-						windowsX64 := osruntime.OSRuntime{GOOS: "windows", GOARCH: "amd64"}
-						err = installer.InstallNodeWithoutDefaults("v5.0.0", binPath, server.URL(), windowsX64)
-					})
-
-					It("should return no error", func() {
-						Expect(err).To(BeNil())
-					})
-
-					It("should GET /dist/v5.0.0/win-x64/node.exe", func() {
-						transaction := server.Get("GET", "/dist/v5.0.0/win-x64/node.exe")
-						Expect(transaction.Request).NotTo(BeNil())
-					})
-
-					It("should save the node response body on the filesystem", func() {
-						expectedData, err := afero.ReadFile(afero.NewOsFs(), "fixtures/node.exe")
-						Expect(err).To(BeNil())
-
-						actualData, err := afero.ReadFile(afero.NewOsFs(), filepath.Join(binPath, "node.exe"))
-						Expect(err).To(BeNil())
-						Expect(actualData).To(Equal(expectedData))
-					})
-				})
-			})
 		})
 	})
 })

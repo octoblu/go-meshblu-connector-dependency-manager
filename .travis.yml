@@ -1,28 +1,11 @@
 language: go
 go:
-- '1.6'
+- '1.7'
 branches:
   only:
   - /^v[0-9]/
-before_install:
-- echo "no before_install"
-install:
-- echo "no install"
+install: true
 script:
-- echo "no tests"
+- ./go.test.sh
 before_deploy:
 - "./cross-compile.sh"
-deploy:
-- provider: releases
-  api_key:
-    secure: "ruJZ3yYzX7wy74/a/wkngPmS5pZ/vVyAqDwPF3hxrR5KrIpt8987VQ5uuhVxBuZhvplZu4so4Ze+UXrkiAluT0vcgrJmxyvKcGm4ENB5gGfDF3mTBpA0iBimAih4wBI1TH6Hj4xL7EXJ3LMAd4zjHw5pBm3bdhEB29ufZsZkfU5yWE5/iVBrr0e7TTcKlVX32/PrJlj7j9bAUm5tWoI2wtSYUy6XlEm5yN4LjrzIcTmxYH0POktp9Vf2R0k787VVf4Z2XTs098q/RfP+1yfH4lfuZxkyZMGpPeA7R83RTNR5ADzmvPN7TS5VEdwsJeFyPu5pcAOlIKYs7HLAsFw0JpjzW7kg1Y3wwyVCLcs9Gz2nEptoURbzLNorvSSSCn/E9oL6x6yodp6EEXV4bABX13M7aSLlNvkixuZ+BGooQtuIsxirAGcpg5GpPcsR1SmtFob1nJ4BDiYn+dOJD4kQwA73WvGJBUmBzoVuEqUVJpI9dGvINJ7XIUnLU/V0VpY9wdtkBXXi8L6mF3gFavA6mT/0uDcVixsqvf4+4ZFs4dvRDnNkOaYGYsCLCg5fb7Zqda/d10nWuNpOGzFvmjHB/AWMRPaah/wOeorki5AlRW86W5F7cMNXXY2v7BQ9aJKAeYnJ+HHuGqVimFhG9CAuYthq+2wmgWQ7LQxkDGINNYU="
-  file:
-  - "tmp/meshblu-connector-dependency-manager-darwin-386"
-  - "tmp/meshblu-connector-dependency-manager-darwin-amd64"
-  - "tmp/meshblu-connector-dependency-manager-linux-386"
-  - "tmp/meshblu-connector-dependency-manager-linux-amd64"
-  - "tmp/meshblu-connector-dependency-manager-windows-386"
-  - "tmp/meshblu-connector-dependency-manager-windows-amd64"
-  skip_cleanup: true
-  on:
-    tags: true

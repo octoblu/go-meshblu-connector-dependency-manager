@@ -27,3 +27,5 @@ go-meshblu-connector-dependency-manager
 entrypoint/meshblu-connector-dependency-manager
 entrypoint/go-meshblu-connector-dependency-manager
 tmp
+coverage.txt
+profile.out
